@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G4K WebApp</title>
+    <style>
+        /* Google Font */
+        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@40;50&display=swap");
+
+        /* Variables */
+        :root {
+            --primary-color: #82CAFF;
+            --secondary-color: #FFC107;
+            --text-color: #333333;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --border-radius: 120px;
+            --transition-speed: 0.3s;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-dark: rgba(0, 0, 0, 0.2);
+            --card-width: 300px;
+            --card-height: 200px;
+            --padding: 20px;
+            --margin: 10px;
+        }
+
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background-image: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: var(--padding);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 4px 6px var(--shadow-light);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        #menuToggle {
+            color: white;
+            background-color: transparent;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Search Box Styles */
+        .search-box-container {
+            padding: var(--padding);
+            background-color: #f0f0f0; 
+            border-bottom: 1px solid #ccc; 
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            padding: var(--margin);
+            background-color: #fff; 
+        }
+
+        .search-box input {
+            width: 100%; 
+            padding: var(--margin);
+            border: none; 
+            border-radius: 0; 
+            font-size: 1rem;
+            transition: none; 
+        }
+
+        .search-box input:focus {
+            outline: none; 
+            box-shadow: none; 
+        }
+
+        #searchResults {
+            width: 100%; 
+            margin-top: var(--margin);
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+            background: #f9f9f9; 
+            padding: var(--padding);
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+        }
+
+        #searchResults a {
+            display: block;
+            padding: var(--padding);
+            margin-bottom: var(--margin);
+            background: #e0e0e0; 
+            color: #333; 
+            text-decoration: none;
+            border-radius: 5px; 
+            transition: background var(--transition-speed);
+        }
+
+        #searchResults a:hover {
+            background: #ccc; 
+        }
+
+        /* Menu Options */
+        .menu-options {
+            display: flex;
+            gap: var(--margin);
+            align-items: center;
+        }
+
+        .menu-options a {
+            color: white;
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+
+        .menu-options a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Responsive Menu */
+        .responsive-menu {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            right: -200px; 
+            width: 200px;
+            height: 150vh;
+            background-color: var(--primary-color);
+            padding: var(--padding);
+            transition: right var(--transition-speed);
+        }
+
+        .responsive-menu.show {
+            right: 0; 
+        }
+
+        .responsive-menu a {
+            color: white;
+            text-decoration: none;
+            padding: var(--padding);
+            display: block;
+            transition: background var(--transition-speed);
+        }
+
+        .responsive-menu a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--card-bg);
+            box-shadow: 0px -2px 5px var(--shadow-light);
+            padding: var(--padding);
+            z-index: 100;
+        }
+
+        .bottom-nav a {
+            flex: 1;
+            text-align: center;
+            padding: var(--padding);
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background var(--transition-speed), transform var(--transition-speed);
+        }
+
+        .bottom-nav a:hover,
+        .bottom-nav a.active {
+            background-color: red;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Scrollable Section */
+        .scrollable-section {
+            display: none;
+            padding-top: var(--padding);
+            padding-bottom: var(--padding);
+        }
+
+        .scrollable-images {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: var(--padding);
+        }
+
+        .scrollable-images img {
+            width: 150px;
+            height: auto;
+            border-radius: var(--border-radius);
+            margin-right: var(--margin);
+            display: inline-block;
+            box-shadow: 0 2px 5px var(--shadow-light);
+            transition: transform var(--transition-speed);
+        }
+
+        .scrollable-images img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Login Form */
+        .container {
+            max-width: var(--card-width);
+            margin: var(--padding) auto;
+            padding: var(--padding);
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0px 5px 15px var(--shadow-light);
+            background-image: linear-gradient(to bottom, #f9f9f9, #fff);
+        }
+
+        .container header {
+            text-align: center;
+            margin-bottom: var(--padding);
+        }
+
+        .container header h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .container header p {
+            color: var(--text-color);
+        }
+
+        form input,
+        form button {
+            width: 100%;
+            padding: var(--padding);
+            margin-bottom: var(--margin);
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        form input:hover,
+        form input:focus {
+            border-color: var(--primary-color);
+        }
+
+        form button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background var(--transition-speed), transform var(--transition-speed);
+        }
+
+        form button:hover {
+            background-color: darkgreen;
+            transform: scale(1.05);
+        }
+
+        /* Contact Modal */
+        .modal {
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: var(--padding);
+            border: 1px solid #888;
+            width: var(--card-width);
+            max-width: var(--card-width);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--margin);
+                margin-top: var(--margin);
+                width: calc(100% - var(--margin) * 2);
+            }
+
+            .bottom-nav a {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: calc(100% - var(--margin));
+                padding: var(--margin);
+            }
+            .bottom-nav a {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<!-- Rest of your HTML content -->
+<body>
+
+    <!-- Header -->
+    <div class="header" id="header">
+        <h1>G4K WebApp</h1>
+        <button id="menuToggle" onclick="toggleMenu()">≡</button>
+    </div>
+
+    <!-- Responsive Menu -->
+    <div class="responsive-menu" id="responsiveMenu">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#" onclick="showContactModal()">Contact</a>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Contact Us</h2>
+            <p>Get in touch with us through:</p>
+            <ul>
+                <li><a href="mailto:marathoni0987@gmail.com">Email: marathoni0987@gmail.com</a></li>
+                <li><a href="tel:1234567890">Call: 1234567890</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="container" id="loginFormContainer">
+        <header>
+            <h1>G4K</h1>
+            <p>Sign in to continue</p>
+            <img src="/assets/log.png" alt="Login Image" style="width: 100%; height: auto; margin-top: 20px;">
+        </header>
+        <form id="loginForm" onsubmit="return login(event)">
+            <input type="text" id="username" placeholder="Enter username" required>
+            <input type="password" id="password" placeholder="Enter password" required>
+            <button type="submit">Login</button>
+            
+            <p> Hackers Try Your Skills </p>            
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <div class="home-content" id="homeContent" style="display:none;">
+
+        <!-- Header with Search -->
+        <div class="header">
+            <h1>G4K WebApp</h1>
+        </div>
+
+        <!-- Search Box Container -->
+        <div class="search-box-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search courses..." oninput="performSearch()" />
+            </div>
+            <div id="searchResults"></div>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <div class="bottom-nav">
+            <a href="#" id="homeNav" onclick="showContent('home')">Home</a>
+            <a href="#" id="moviesNav" onclick="showContent('movies')">Movies</a>
+            <a href="#" id="g4kNav" onclick="showContent('g4k')">G4K Web</a>
+            <a href="#" id="appsNav" onclick="loadApp()">Apps</a>
+        </div>
+
+        <!-- Content Sections -->
+        <div id="contentSections">
+            <div id="homeContent" class="hidden-content">
+                <h2>Welcome Home</h2>
+                <p>This is the home page content.</p>
+                <img src="https://via.placeholder.com/400x200?text=Home+Image" alt="Home Image" style="width: 100%; height: auto; margin-top: 20px;">
+            </div>
+
+            <div id="moviesContent" class="hidden-content">
+                <h2>Movies</h2>
+                <div class="scrollable-images">
+                    <a href="https://allmovieshub.host/" target="_blank">
+                        <img src="/assets/movie.png" alt="Link 1">
+                    </a>
+                    <a href="https://vegamovies.family" target="_blank">
+                        <img src="/assets/movie2.png" alt="Link 2">
+                    </a>
+                    <a href="https://moviesrock.dog/" target="_blank">
+                        <img src="/assets/movie3.png" alt="Link 3">
+                    </a>
+                    <a href="https://iosmirror.cc/home" target="_blank">
+                        <img src="/assets/movie4.png" alt="Link 4">
+                    </a>
+                    <a href="https://movie4u.org.in/" target="_blank">
+                        <img src="/assets/movie5.png" alt="Movie 5">
+                    </a>
+                    <a href="https://rdxhd.blog/" target="_blank">
+                        <img src="/assets/movie6.png" alt="Movie 6">
+                    </a>                    
+                    <a href="https://filmyhunk.xyz/" target="_blank">
+                        <img src="/assets/movie7.png" alt="Movie 7">
+                    </a>                                        
+                    <a href="https://noobstudio.in/" target="_blank">
+                        <img src="/assets/movie8.png" alt="Movie 8 (anime)">
+                    </a>                                        
+                </div>
+            </div>
+
+            <div id="appsContent" class="hidden-content">
+                <h2>Apps</h2>
+                <div class="scrollable-images">
+                    <a href="https://example.com/app1" target="_blank">
+                        <img src="/assets/x.png" alt="App 1">
+                    </a>
+                    <a href="https://example.com/app2" target="_blank">
+                        <img src="/assets/x.png" alt="App 2">
+                    </a>
+                    <a href="https://example.com/app3" target="_blank">
+                        <img src="/assets/x.png" alt="App 3">
+                    </a>
+                    <a href="https://example.com/app4" target="_blank">
+                        <img src="/assets/x.png" alt="App 4">
+                    </a>
+                    <a href="https://example.com/app5" target="_blank">
+                        <img src="/assets/x.png" alt="App 5">
+                    </a>
+                </div>
+            </div>
+
+            <div id="g4kContent" class="hidden-content">
+                <h2> G4K Web ( in development ) </h2>
+                <div class="scrollable-images">
+                    <a href="https://example.com/g4kweb1" target="_blank">
+                        <img src="https://via.placeholder.com/150x200?text=G4K+Web+1" alt="G4K Web 1">
+                    </a>
+                    <a href="https://example.com/g4kweb2" target="_blank">
+                        <img src="https://via.placeholder.com/150x200?text=G4K+Web+2" alt="G4K Web 2">
+                    </a>
+                    <a href="https://example.com/g4kweb3" target="_blank">
+                        <img src="https://via.placeholder.com/150x200?text=G4K+Web+3" alt="G4K Web 3">
+                    </a>
+                    <a href="https://example.com/g4kweb4" target="_blank">
+                        <img src="https://via.placeholder.com/150x200?text=G4K+Web+4" alt="G4K Web 4">
+                    </a>
+                    <a href="https://example.com/g4kweb5" target="_blank">
+                        <img src="https://via.placeholder.com/150x200?text=G4K+Web+5" alt="G4K Web 5">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Function to show content based on the navigation selection
+        function showContent(category) {
+            const contentSections = document.querySelectorAll('.hidden-content');
+            contentSections.forEach(section => section.style.display = 'none');
+
+            const navLinks = document.querySelectorAll('.bottom-nav a');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            if (category === 'home') {
+                document.getElementById('homeNav').classList.add('active');
+            } else {
+                document.getElementById(category + 'Nav').classList.add('active');
+            }
+
+            document.getElementById(category + 'Content').style.display = 'block';
+        }
+
+        // Function to load app.html
+        function loadApp() {
+            window.location.href = 'app.html';
+        }
+
+        async function login(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            const response = await fetch("pass.txt");
+            const text = await response.text();
+            const credentials = text.split("\n").map(line => line.trim());
+
+            const isValid = credentials.some(cred => {
+                const [fileUsername, filePassword] = cred.split(":");
+                return fileUsername === username && filePassword === password.trim();
+            });
+
+            if (isValid) {
+                document.getElementById('loginFormContainer').style.display = 'none';
+                document.getElementById('homeContent').style.display = 'block';
+
+                // Show Movies by default after login
+                showContent('movies');
+
+                document.getElementById('header').style.display = 'block'; // Show the header
+            } else {
+                alert("Invalid username or password.");
+            }
+        }
+
+        async function performSearch() {
+            const searchInput = document.getElementById("searchInput").value.toLowerCase();
+            const searchResults = document.getElementById("searchResults");
+
+            if (searchInput.trim() === "") {
+                searchResults.innerHTML = "";
+                return;
+            }
+
+            try {
+                const response = await fetch("database.txt");
+                const text = await response.text();
+                const lines = text.split("\n").map(line => line.trim());
+                const filteredResults = lines.filter(line => line.toLowerCase().includes(searchInput));
+
+                searchResults.innerHTML = filteredResults.map((result, index) => {
+                    const [courseName, link] = result.split("|");
+                    return `<a href="${link}" target="_blank" class="search-result" data-index="${index}">${courseName}</a>`;
+                }).join("");
+
+                // Add click event listener for color change
+                const resultLinks = document.querySelectorAll('.search-result');
+                resultLinks.forEach(link => {
+                    link.addEventListener('click', function () {
+                        resultLinks.forEach(item => {
+                            item.style.color = ''; // Reset text color
+                            item.style.background = ''; // Reset background
+                        });
+                        this.style.color = 'orange'; // Change clicked link text color
+                        this.style.background = '#f0f0f0'; // Change clicked link background to soft grey
+                    });
+                });
+            } catch (error) {
+                console.error("Error fetching or parsing database.txt:", error);
+            }
+        }
+
+        function toggleMenu() {
+            document.getElementById('responsiveMenu').classList.toggle('show');
+        }
+
+        function showContactModal() {
+            document.getElementById('contactModal').style.display = 'block';
+        }
+
+        document.getElementsByClassName('close')[0].addEventListener('click', function() {
+            document.getElementById('contactModal').style.display = 'none';
+        });
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.addEventListener('click', function(event) {
+            if (event.target == document.getElementById('contactModal')) {
+                document.getElementById('contactModal').style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+
+</html>
+
+
